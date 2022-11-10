@@ -1,43 +1,49 @@
 package utils;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.InputStreamReader;
+import java.io.ObjectInput;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutput;
+import java.io.ObjectOutputStream;
 import java.net.Socket;
+
+import controller.Communicate;
 
 public class MessageController {
     public final Socket socket;
-    public final BufferedReader in;
-    public final PrintWriter out;
+    public final ObjectInput in;
+    public final ObjectOutput out;
 
     public MessageController(Socket socket) throws Exception {
         this.socket = socket;
-        in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-        out = new PrintWriter(socket.getOutputStream(), true);
+        in = new ObjectInputStream(socket.getInputStream());
+        out = new ObjectOutputStream(socket.getOutputStream());
     }
 
-    public String getMsg() { return getMessage(); }
-    public String getMessage() {
+     public Object getObject() {
         try {
-            return in.readLine();
-        } catch(IOException err) { return null; }
+            return in.readObject();
+        } catch(Exception err) { return null; }
     }
 
-    public boolean send(String message) { return sendMessage(message); }
-    public boolean sendMessage(String value) {
-        out.println(value);
-
-        return !out.checkError();
+    public boolean sendObject(Communicate message) {
+        try {
+            out.writeObject(message);
+            out.flush();
+            return true;
+        } catch (IOException e) {
+            return false;
+        }
     }
 
-        public void close() throws Exception {
+    public void close() throws Exception {
         try {
             in.close();
             out.close();
             socket.close();
         } catch(IOException err) { 
-            throw new Exception("Error when closing: \n ->"+err.getMessage());
+            throw new Exception("Error when closing: \n ->"+
+                err.getMessage());
         }
     }
 }
