@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Grid {
-    private List<Player> players;
-    private List<Apple> apples;
+    protected List<Player> players;
+    protected List<Apple> apples;
 
     public final int limit;
 
@@ -135,6 +135,8 @@ public class Grid {
 
         return a;
     }
+
+
 
     @Override
     public boolean equals (Object obj) {
