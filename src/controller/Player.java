@@ -1,24 +1,18 @@
-package game;
+package controller;
 
 import java.awt.Color;
 
-import com.google.gson.Gson;
-
-import utils.GenerateJson;
-import utils.MessageController;
-
-public class Player extends Coordinate implements GenerateJson {
-    public final MessageController client;
+public class Player extends Coordinate {
     public final String ID;
     public final String username;
     public final Color color;
     private int points;
 
-    public Player(MessageController client, String ID, String username, Color color, int x, int y) throws Exception {
+    public Player(String ID, String username, Color color, int x, int y) throws Exception {
         super(x, y);
         if(username.length() > 10 || username.contains(" ")) throw new Exception("invalid username");
+        // if(ID == null || ID.length() < 7) throw new Exception("invalid ID");
         if(color == null) throw new Exception("invalid color");
-        this.client = client;
         this.ID = ID;
         this.username = username;
         this.color = color;
@@ -45,11 +39,6 @@ public class Player extends Coordinate implements GenerateJson {
     public int getPoints() { return points; }
     protected void setPoints(int value) { this.points = value; }
     protected void addPoint(int point) { this.points += point; }
-
-    @Override
-    public String toJson() {
-        return new Gson().toJson(this);
-    }
 
     @Override
     public String toString() {

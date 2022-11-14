@@ -1,9 +1,8 @@
-package game;
+package controller;
 
-import com.google.gson.Gson;
-import utils.GenerateJson;
 
-public class Apple extends Coordinate implements GenerateJson {
+
+public class Apple extends Coordinate {
     public final String ID;
     private int value;
     public final int minValue;
@@ -46,11 +45,6 @@ public class Apple extends Coordinate implements GenerateJson {
     public String toString() {
         return String.format("value: %d, minValue: %d, timeout: %d, coordinate: { %s }", this.value, this.minValue, this.timeout, super.toString());
     }
-
-    @Override
-    public String toJson() {
-        return new Gson().toJson(this);
-    } 
 
     @Override
     public boolean equals (Object obj) {

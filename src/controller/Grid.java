@@ -3,10 +3,6 @@ package controller;
 import java.util.ArrayList;
 import java.util.List;
 
-import game.Apple;
-import game.Coordinate;
-import game.Player;
-
 public class Grid {
     protected List<Player> players;
     protected List<Apple> apples;

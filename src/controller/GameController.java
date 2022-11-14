@@ -1,7 +1,5 @@
 package controller;
 
-import game.Player;
-
 public class GameController extends Grid {
 
     public GameController(int limitGrid) throws Exception 
