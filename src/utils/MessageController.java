@@ -1,28 +1,38 @@
 package utils;
 
 import java.io.IOException;
-import java.io.ObjectInput;
 import java.io.ObjectInputStream;
-import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 
 import controller.Communicate;
 
 public class MessageController {
-    public final Socket socket;
-    public final ObjectInput in;
-    public final ObjectOutput out;
+    private Socket socket;
+    private ObjectInputStream in;
+    private ObjectOutputStream out;
 
     public MessageController(Socket socket) throws Exception {
+        if(socket == null)
+            throw new Exception("socket cannot be null");
         this.socket = socket;
-        in = new ObjectInputStream(socket.getInputStream());
-        out = new ObjectOutputStream(socket.getOutputStream());
+        this.out = new ObjectOutputStream(this.socket.getOutputStream());
+        this.in = new ObjectInputStream(this.socket.getInputStream());
     }
 
-     public Object getObject() {
+    public MessageController(MessageController mc ) throws Exception {
+        if(mc == null)
+            throw new Exception ("MessageController cannot be null");
+        this.socket = mc.socket;
+        this.in = mc.in;
+        this.out = mc.out;  
+    }
+
+    public String getID() { return socket.getRemoteSocketAddress().toString(); }
+
+    public Communicate getObject() {
         try {
-            return in.readObject();
+            return (Communicate)in.readObject();
         } catch(Exception err) { return null; }
     }
 
