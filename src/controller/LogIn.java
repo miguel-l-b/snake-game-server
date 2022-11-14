@@ -6,4 +6,7 @@ public class LogIn extends Communicate {
     public LogIn(String username) {
         this.USERNAME = username;
     }
+
+    @Override
+    public String toString() { return String.format("'%s'", USERNAME); }
 }
