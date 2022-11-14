@@ -1,21 +1,19 @@
 package controller;
 
-import game.Coordinate;
-
 public class AlterPosition extends Communicate {
     public final String ID;
     public final char TYPE;
-    public final int X, Y;
+    public final Coordinate coords;
 
     public AlterPosition(String id, char type, int x, int y) {
         this.ID = id;
         this.TYPE = type;
-        this.X = x;
-        this.Y = y;
+        this.coords = new Coordinate(x, y);
     }
-
-    public Coordinate getCoords() {
-        return new Coordinate(this.X, this.Y);
+    public AlterPosition(String id, char type, Coordinate coords) {
+        this.ID = id;
+        this.TYPE = type;
+        this.coords = coords;
     }
 
     public boolean isApple() {
@@ -24,4 +22,7 @@ public class AlterPosition extends Communicate {
     public boolean isPlayer() {
         return this.TYPE == 'p';
     }
+
+    @Override
+    public String toString() { return String.format("%s<%s>[%s]", TYPE, ID, coords.toString()); }
 }
