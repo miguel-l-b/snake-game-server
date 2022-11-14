@@ -15,7 +15,11 @@ public class Kick extends Communicate {
             case 1: return "timeout";
             case 2: return "ban";
             case 3: return "initialization";
+            case 4: return "server stopped";
             default: return "random";
         }
     }
+
+    @Override
+    public String toString() { return String.format("<%s>(%s)", ID, REASON); }
 }
