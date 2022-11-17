@@ -1,10 +1,12 @@
 package controller;
 
 public class Game extends Communicate {
+    public final String ID;
     public final Apple[] APPLES;
     public final Player[] PLAYERS;
     
-    public Game(Apple[] apples, Player[] players) {
+    public Game(String id, Apple[] apples, Player[] players) {
+        this.ID = id;
         this.APPLES = apples;
         this.PLAYERS = players;
     }

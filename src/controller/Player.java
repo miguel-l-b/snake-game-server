@@ -8,6 +8,10 @@ public class Player extends Coordinate {
     public final Color color;
     private int points;
 
+    public Player(String ID, String username, Color color, Coordinate coords) throws Exception {
+        this(ID, username, color, coords.getX(), coords.getY());
+    }
+
     public Player(String ID, String username, Color color, int x, int y) throws Exception {
         super(x, y);
         if(username.length() > 10 || username.contains(" ")) throw new Exception("invalid username");

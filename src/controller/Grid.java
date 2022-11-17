@@ -24,6 +24,28 @@ public class Grid {
         this.apples = grid.apples;
     }
 
+    public Coordinate getRandomEmptyCoord() throws Exception {
+        Coordinate c = Coordinate.getRandomCoord(limit);
+
+        int cont = 0;
+
+        while(isPlayerInPosition(c)) {
+            cont++;
+            if(cont == limit*limit)
+                throw new Exception("");
+            if(c.getX() == limit)
+                c.setPosition(0, c.getY());
+            else if(c.getX() < limit-1)
+                c.setPosition(c.getX()-1, c.getY());
+            else if(c.getY() == limit)
+                c.setPosition(c.getX(), 0);
+            else
+                c.setPosition(c.getX(), c.getY()-1);
+        }
+
+        return c;
+    }
+
     public boolean isAteAnApple(int indexPlayer) {
         Player p = players.get(indexPlayer);
         Apple apple = getAppleInPosition(p.getX(), p.getY());
@@ -140,8 +162,6 @@ public class Grid {
 
         return a;
     }
-
-
 
     @Override
     public boolean equals (Object obj) {

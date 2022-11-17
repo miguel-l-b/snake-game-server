@@ -21,9 +21,11 @@ public class AcceptClient extends Thread {
     }
 
     public void sendObjectToPlayer(Communicate value, Client client) {
+        ConsoleManager.print("Sent object to player " + client.ID+" ");
         if(!client.sendObject(value)) {
             try { client.close(); } catch (Exception e) { }
             try {
+                System.out.println(client.ID);
                 gameGrid.removePlayerByID(client.ID);
                 sendObjectToPlayers(new Kick(client.ID, 1)); // timeout
             } catch (Exception e) { }
@@ -56,15 +58,13 @@ public class AcceptClient extends Thread {
                 ConsoleManager.println(Console.Colors.MAGENTA, "client connected "+client.getID());
                 Object obj = client.getObject(); // espera pela classe LogIn
                 if(obj instanceof LogIn) {
-                    Player player = new Player(client.getID(), ((LogIn)obj).USERNAME, ColorsPlayer.RANDOM(), 0, 0);
-                    
+                    Player player = new Player(client.getID(), ((LogIn)obj).USERNAME, ColorsPlayer.RANDOM(), gameGrid.getRandomEmptyCoord());                 
                     // adicionar o player ao game
                     gameGrid.addPlayer(player);
+                    clients.add(new Client(player.ID, client));
                     // enviar todos os dados do game para o cliente
-                    client.sendObject(new Game(gameGrid.getApples(), gameGrid.getPlayers()));
+                    client.sendObject(new Game(client.getID(), gameGrid.getApples(), gameGrid.getPlayers()));
                     // enviar para todos os clientes o novo cliente
-
-                    ConsoleManager.println(Console.Colors.MAGENTA, "client logged "+player.username);
                     sendObjectToPlayersExceptionPlayerID(player, player.ID);
                     // espera por uma request do player
                     // new RequestHandle(player);

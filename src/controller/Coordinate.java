@@ -1,13 +1,22 @@
 package controller;
 
+import java.util.Random;
+
 public class Coordinate extends Communicate {
     private int x, y;
+
+    public static Coordinate getRandomCoord(int limit) {
+        Random random = new Random();//travou o discord   
+        return new Coordinate(random.nextInt(limit), random.nextInt(limit));
+    }
 
     public Coordinate(int x, int y) {
         this.x = x;
         this.y = y;
     }
 
+    protected void setPosition(Coordinate coords) 
+    { this.x = coords.getX(); this.y = coords.getY(); }
     protected void setPosition(int x, int y) 
     { this.x = x; this.y = y; }
 
