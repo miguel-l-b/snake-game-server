@@ -1,87 +1,121 @@
 import controller.*;
 import utils.*;
 
-
-import java.util.Vector;
-
 import Console.ConsoleManager;
 import java.net.ServerSocket;
 
 
-public class AcceptClient extends Thread {
+public class AcceptClient extends AppleController implements Runnable {
     public final ServerSocket socket;
-    private final GameController gameGrid;
-    private final Vector<Client> clients = new Vector<Client>();
 
     public AcceptClient(ServerSocket socket) throws Exception {
+        super(new GameController(20));
         if(socket == null)
             throw new Exception("socket cannot be null");
         this.socket = socket;
-        this.gameGrid = new GameController(20); 
     }
 
-    public void sendObjectToPlayer(Communicate value, Client client) {
-        ConsoleManager.print("Sent object to player " + client.ID+" ");
-        if(!client.sendObject(value)) {
-            try { client.close(); } catch (Exception e) { }
-            try {
-                System.out.println(client.ID);
-                gameGrid.removePlayerByID(client.ID);
-                sendObjectToPlayers(new Kick(client.ID, 1)); // timeout
-            } catch (Exception e) { }
-        }
-    }
-
-    public void sendObjectToPlayersExceptionPlayerID(Communicate value, String clientID) {
-        for (Client client : clients)
-            if(client.ID != clientID) sendObjectToPlayer(value, client);
-    }
-    public void sendObjectToPlayers(Communicate value) 
-    { for (Client client : clients) sendObjectToPlayer(value, client); }
-
-    public void kill() {
-        for (Client client : clients) {
-            client.sendObject(new Kick(null, 4));
-            try { client.close(); } catch (Exception e) { }
-        }
+    public void start() {
+        new Thread(this).start();
     }
 
     @Override
     public void run() {
         while(true) {
             // aceitar a conexao do cliente
-            MessageController client = null;
+            MessageController mc = null;
             ConsoleManager.println(Console.Colors.CYAN, "Aguardando uma conexão...");
             try {
                 // recebendo uma conexão 
-				client = new MessageController(socket.accept()); //métdo para travar e esperar que o usuário passe o username
-                ConsoleManager.println(Console.Colors.MAGENTA, "client connected "+client.getID());
-                Object obj = client.getObject(); // espera pela classe LogIn
+				mc = new MessageController(socket.accept()); //métdo para travar e esperar que o usuário passe o username
+                ConsoleManager.println(Console.Colors.MAGENTA, "client connected "+mc.getID());
+                if(clients.size() >= 5) {
+                    ConsoleManager.println(Console.Colors.YELLOW_BOLD_BRIGHT,"client disconnected "+mc.getID()+" (server full)");
+                    mc.sendObject(new Kick(null, 2));
+                    continue;
+                }
+
+                Object obj = mc.getObject(); // espera pela classe LogIn
                 if(obj instanceof LogIn) {
-                    Player player = new Player(client.getID(), ((LogIn)obj).USERNAME, ColorsPlayer.RANDOM(), gameGrid.getRandomEmptyCoord());                 
+                    Player player = new Player(mc.getID(), ((LogIn)obj).USERNAME, ColorsPlayer.RANDOM(), gameGrid.getRandomEmptyCoord());                 
                     // adicionar o player ao game
                     gameGrid.addPlayer(player);
-                    clients.add(new Client(player.ID, client));
+                    Client client = new Client(player.ID, mc);
+                    clients.add(client);
                     // enviar todos os dados do game para o cliente
-                    client.sendObject(new Game(client.getID(), gameGrid.getApples(), gameGrid.getPlayers()));
+                    mc.sendObject(new Game(mc.getID(), gameGrid.getApples(), gameGrid.getPlayers()));
                     // enviar para todos os clientes o novo cliente
                     sendObjectToPlayersExceptionPlayerID(player, player.ID);
                     // espera por uma request do player
-                    // new RequestHandle(player);
+                    new RequestHandle(client);
                 } else {
                     // avisar o cliente e desconectar
-                    ConsoleManager.println(Console.Colors.YELLOW_BOLD_BRIGHT,"client disconnected "+client.getID());
+                    ConsoleManager.println(Console.Colors.YELLOW_BOLD_BRIGHT,"client disconnected "+mc.getID());
                 }
 			} catch (Exception err) {
                 err.printStackTrace();
                 ConsoleManager.println(Console.Colors.RED_BOLD_BRIGHT,"Connection error");
-                if(client != null) { // (roolback) voltar o que foi feito
+                if(mc != null) { // (roolback) voltar o que foi feito
                     try {
-                        client.sendObject(new Kick(null, 3));
-                        client.close();
+                        mc.sendObject(new Kick(null, 3));
+                        mc.close();
                     } catch (Exception err2) { }
                 }
             }            
+        }
+    }
+
+    protected class RequestHandle implements Runnable {
+        private final Client client;
+        public RequestHandle(Client client) {
+            this.client = client;
+            new Thread(this).start();
+        }
+        
+        @Override
+        public void run() {
+            while(true) {
+                Communicate request = null;
+                try {
+                    ConsoleManager.println(Console.Colors.CYAN, "Aguardando uma requisição...");
+                    request = client.getObject();
+                    if(request == null) break;
+                    if(request instanceof AlterPosition) {
+                        AlterPosition alterP = (AlterPosition)request;
+                        int index = gameGrid.indexOfPlayerByID(alterP.ID);
+
+                        if(alterP.getX() != 0) 
+                            gameGrid.movingHorizontal(alterP.getX(), index);
+                        else
+                            gameGrid.movingVertical(alterP.getY(), index);
+                        
+                        sendObjectToPlayers(new AlterPosition(client.ID, 'p', gameGrid.getPlayer(index).getCoords()));
+                    } else if(request instanceof Kick) {
+                        // desconectar o cliente
+                        try {
+                            ConsoleManager.println(Console.Colors.YELLOW_BOLD_BRIGHT,"client disconnected "+client.ID+" to: "+((Kick)request).getReason()+" (kick)");
+                            client.close();
+                            clients.remove(client);
+                            gameGrid.removePlayerByID(client.ID);
+                            sendObjectToPlayers(new Kick(client.ID, 0));
+                        } catch (Exception e) { }
+                    }
+                } catch(Exception err) {
+                    try {
+                        err.printStackTrace();
+                        ConsoleManager.println(Console.Colors.RED_BOLD_BRIGHT,"Connection error");
+                        ConsoleManager.println(Console.Colors.YELLOW_BOLD_BRIGHT,"client disconnected "+client.ID+" (request error)");
+                        Kick kick = new Kick(client.ID, 0);
+
+                        sendObjectToPlayer(kick, client);
+
+                        clients.remove(client);
+                        gameGrid.removePlayerByID(client.ID);
+                        sendObjectToPlayers(kick);
+                        client.close();
+                    } catch (Exception e) { }
+                }
+            }
         }
     }
 }
