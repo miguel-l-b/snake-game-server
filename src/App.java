@@ -14,6 +14,7 @@ public class App {
             accept = new AcceptClient(new ServerSocket(port));
             accept.start();
             ConsoleManager.clear();
+            ConsoleManager.println(Colors.CYAN_BOLD_BRIGHT, "> digite [sair] para fechar o servidor");
             ConsoleManager.println(Colors.GREEN, "Started in "+port);
 
             while(Keyboard.getString().equals("sair")) {
