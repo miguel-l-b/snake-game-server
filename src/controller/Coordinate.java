@@ -20,6 +20,7 @@ public class Coordinate extends Communicate {
     protected void setPosition(int x, int y) 
     { this.x = x; this.y = y; }
 
+    public Coordinate getCoords() { return new Coordinate(x, y); }
     public int getX() {return this.x; }
     public int getY() {return this.y; }
 
