@@ -69,6 +69,9 @@ public class Grid {
         return result;
     }
     public Player getFistPlayer() { return players.get(0); }
+    public Player getPlayer(int index) {
+        return players.get(index);
+    }
     public Player getPlayerByID(String id)
     { 
         int i = indexOfPlayerByID(id);
@@ -76,7 +79,7 @@ public class Grid {
     }
     public int indexOfPlayerByID(String id) {
         for (int i = 0; i < this.players.size(); i++)
-            if(this.players.get(i).ID == id) return i;
+            if(this.players.get(i).ID.equals(id)) return i;
 
         return -1;
     }
