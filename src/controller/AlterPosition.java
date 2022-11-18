@@ -3,7 +3,7 @@ package controller;
 public class AlterPosition extends Communicate {
     public final String ID;
     public final char TYPE;
-    public final Coordinate coords;
+    protected final Coordinate coords;
 
     public AlterPosition(String id, char type, int x, int y) {
         this.ID = id;
@@ -15,6 +15,9 @@ public class AlterPosition extends Communicate {
         this.TYPE = type;
         this.coords = coords;
     }
+
+    public int getX() { return coords.getX(); }
+    public int getY() { return coords.getY(); }
 
     public boolean isApple() {
         return this.TYPE == 'a';
