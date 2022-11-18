@@ -13,7 +13,7 @@ public class Kick extends Communicate {
         switch(this.REASON) {
             case 0: return "kicked";
             case 1: return "timeout";
-            case 2: return "ban";
+            case 2: return "server full";
             case 3: return "initialization";
             case 4: return "server stopped";
             default: return "random";
