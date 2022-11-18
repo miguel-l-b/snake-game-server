@@ -36,9 +36,9 @@ public class MessageController {
         } catch(Exception err) { return null; }
     }
 
-    public boolean sendObject(Communicate message) {
+    public boolean sendObject(Communicate object) {
         try {
-            out.writeObject(message);
+            out.writeObject(object);
             out.flush();
             return true;
         } catch (IOException e) {
