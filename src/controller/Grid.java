@@ -119,6 +119,7 @@ public class Grid {
     public void removePlayerByID(String id) throws Exception 
     { this.players.remove(getPlayerByID(id)); }
 
+    public int getSizeApples() { return apples.size(); }
     public Apple[] getApples() {
         Apple[] result = new Apple[apples.size()];
         

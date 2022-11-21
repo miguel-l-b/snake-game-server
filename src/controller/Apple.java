@@ -1,13 +1,10 @@
 package controller;
 
-
-
 public class Apple extends Coordinate {
     public final String ID;
     private int value;
     public final int minValue;
     public final long timeout;
-    private Thread handleValue;
 
     public Apple(String ID, int x, int y, int value, int minValue, long timeout) {
         super(x, y);
@@ -15,15 +12,11 @@ public class Apple extends Coordinate {
         this.value = value;
         this.minValue = minValue;
         this.timeout = timeout;
-
-        this.handleValue = new Thread(() -> { handleValue(); });
-
-        this.handleValue.start();
     }
 
-    private void handleValue() {
+    protected void handleValue() {
         while(value > minValue) {
-            try { this.handleValue.sleep(this.timeout); } catch(InterruptedException e) {}
+            try { Thread.sleep(this.timeout); } catch(InterruptedException e) {}
             
             value--;
         }
@@ -54,7 +47,6 @@ public class Apple extends Coordinate {
         if(this.getClass() != obj.getClass()) return false;
 
         Apple a = (Apple)obj;
-        if(this.handleValue != a.handleValue) return false;
         if(this.minValue != a.minValue) return false;
         if(this.timeout != a.timeout) return false;
         if(this.value != a.value) return false;
@@ -65,7 +57,7 @@ public class Apple extends Coordinate {
 
     @Override
     public int hashCode() {
-        int hash = 2;
+        int hash = 22;
         hash = 3  * hash + super.hashCode();
         hash = 7  * hash + Integer.valueOf(this.value).hashCode();
         hash = 13 * hash + Integer.valueOf(this.minValue).hashCode();
