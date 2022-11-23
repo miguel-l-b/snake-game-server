@@ -6,6 +6,11 @@ public class Apple extends Coordinate {
     public final int minValue;
     public final long timeout;
 
+    
+    public Apple(String ID, Coordinate coords, int value, int minValue, long timeout) {
+        this(ID, coords.getX(), coords.getY(), value, minValue, timeout);
+    }
+
     public Apple(String ID, int x, int y, int value, int minValue, long timeout) {
         super(x, y);
         this.ID = ID;

@@ -118,6 +118,7 @@ public class Grid {
     { for (Player player : values) this.players.add(player); }
     public void removePlayerByID(String id) throws Exception 
     { this.players.remove(getPlayerByID(id)); }
+    public int getSizePlayers() { return players.size(); }
 
     public int getSizeApples() { return apples.size(); }
     public Apple[] getApples() {
@@ -149,7 +150,7 @@ public class Grid {
         throw new Exception("error in find apple by id");
     }
 
-    public void addApple(Apple value) { this.apples.add(value); }
+    public void addApple(Apple value) { this.apples.add(value); new Thread(() -> { value.handleValue(); }).start(); }
     public void addApples(Apple[] values) { for (Apple apple : values) this.apples.add(apple); }
     public void removeApple(Apple apple) { this.apples.remove(apple); }
     public Apple getAppleCloseTo(Player player) {

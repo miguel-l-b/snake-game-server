@@ -3,7 +3,8 @@ import utils.*;
 
 import Console.ConsoleManager;
 import java.net.ServerSocket;
-
+import java.util.Random;
+import java.util.UUID;
 
 public class AcceptClient extends AppleController implements Runnable {
     public final ServerSocket socket;
@@ -16,12 +17,29 @@ public class AcceptClient extends AppleController implements Runnable {
     }
 
     public void start() {
+        startApple();
         new Thread(this).start();
     }
 
     @Override
     public void run() {
+        Random random = new Random();
         while(true) {
+            if(gameGrid.getSizePlayers() > 1 && gameGrid.getSizeApples() == 0)   {
+                for(int i = 0; i < random.nextInt(1, 5);i++) {
+                    try {
+                        String ID = UUID.randomUUID().toString();
+                        Coordinate coords = gameGrid.getRandomEmptyCoord();
+                        int valueMax = random.nextInt(10, 20);
+                        int valueMin = random.nextInt(-5, 10);
+                        int timeout = random.nextInt(500, 2000);
+
+                        Apple a = new Apple(ID, coords, valueMax, valueMin, timeout);
+                        gameGrid.addApple(a);
+                        sendObjectToPlayers(a);
+                    } catch (Exception e) { }
+                }
+            } 
             // aceitar a conexao do cliente
             MessageController mc = null;
             ConsoleManager.println(Console.Colors.CYAN, "Aguardando uma conexão...");

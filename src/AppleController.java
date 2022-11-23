@@ -1,5 +1,8 @@
-import controller.GameController;
-import controller.Grid;
+import java.util.Random;
+import java.util.UUID;
+
+import Console.ConsoleManager;
+import controller.*;
 
 public class AppleController extends ManagerClients implements Runnable {
 
@@ -13,6 +16,7 @@ public class AppleController extends ManagerClients implements Runnable {
     }
 
     public void startApple() {
+        runningApples = true;
         this.handleApple.start();
     }
 
@@ -23,14 +27,8 @@ public class AppleController extends ManagerClients implements Runnable {
     }
 
     public void run() {
-        Grid g ;
         while(runningApples) {
-         if(g.getSizeApples() == 0)   {
-                for(int i; g.getSizeApples()<5;i++) {
-                    Apple result; 
-                    g.addApple();
-                }
-            }
+           
         }
     }
 }
