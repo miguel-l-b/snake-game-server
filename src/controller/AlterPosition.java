@@ -3,21 +3,21 @@ package controller;
 public class AlterPosition extends Communicate {
     public final String ID;
     public final char TYPE;
-    protected final Coordinate coords;
+    protected final Coordinate COORDS;
 
     public AlterPosition(String id, char type, int x, int y) {
         this.ID = id;
         this.TYPE = type;
-        this.coords = new Coordinate(x, y);
+        this.COORDS = new Coordinate(x, y);
     }
     public AlterPosition(String id, char type, Coordinate coords) {
         this.ID = id;
         this.TYPE = type;
-        this.coords = coords;
+        this.COORDS = coords;
     }
 
-    public int getX() { return coords.getX(); }
-    public int getY() { return coords.getY(); }
+    public int getX() { return COORDS.getX(); }
+    public int getY() { return COORDS.getY(); }
 
     public boolean isApple() {
         return this.TYPE == 'a';
@@ -27,5 +27,5 @@ public class AlterPosition extends Communicate {
     }
 
     @Override
-    public String toString() { return String.format("%s<%s>[%s]", TYPE, ID, coords.toString()); }
+    public String toString() { return String.format("%s<%s>[%s]", TYPE, ID, COORDS.toString()); }
 }
