@@ -14,7 +14,7 @@ public class Player extends Coordinate {
 
     public Player(String ID, String username, Color color, int x, int y) throws Exception {
         super(x, y);
-        if(username.length() > 10 || username.contains(" ")) throw new Exception("invalid username");
+        if(username.length() > 20 || username.contains(" ")) throw new Exception("invalid username");
         // if(ID == null || ID.length() < 7) throw new Exception("invalid ID");
         if(color == null) throw new Exception("invalid color");
         this.ID = ID;
