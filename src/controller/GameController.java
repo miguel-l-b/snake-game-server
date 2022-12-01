@@ -7,6 +7,14 @@ public class GameController extends Grid {
     public GameController(Grid grid) throws Exception 
     { super(grid); }
 
+    public boolean isFinish() {
+        for (Player p : players) {
+            if(p.getPoints() >= 100)
+                return true;
+        }
+        return false;
+    }
+
     public Apple handleCollision(int indexPlayer) { 
         Apple apple = super.isAteAnApple(indexPlayer);
         if(apple == null) return null;

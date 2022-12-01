@@ -13,6 +13,8 @@ public class ManagerClients {
         this.gameGrid = gameGrid;
     }
 
+    public void renderFinish() { sendObjectToPlayers(new Kick(null, 5)); }
+
     public void sendObjectToPlayer(Communicate value, Client client) {
         if(!client.sendObject(value)) {
             try { client.close(); } catch (Exception e) { }

@@ -79,6 +79,7 @@ public class AcceptClient extends ManagerClients implements Runnable {
             while(true) {
                 Communicate request = null;
                 try {
+                    if(gameGrid.isFinish()) renderFinish();
                     ConsoleManager.println(Console.Colors.CYAN, "Aguardando uma requisição...");
                     request = client.getObject();
                     if(request == null) break;
@@ -95,6 +96,7 @@ public class AcceptClient extends ManagerClients implements Runnable {
 
                         if(eatApple != null) {
                             sendObjectToPlayers(new EatApple(eatApple.ID, alterP.ID, eatApple.getValue()));
+                            Thread.sleep(100);
                             HandleApple();
                         }
                         sendObjectToPlayersExceptionPlayerID(new AlterPosition(alterP.ID, 'p', gameGrid.getPlayer(index).getCoords()), alterP.ID);
