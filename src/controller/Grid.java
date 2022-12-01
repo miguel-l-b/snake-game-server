@@ -46,17 +46,11 @@ public class Grid {
         return c;
     }
 
-    public boolean isAteAnApple(int indexPlayer) {
+    public Apple isAteAnApple(int indexPlayer) {
         Player p = players.get(indexPlayer);
-        Apple apple = getAppleInPosition(p.getX(), p.getY());
-        if(apple != null) {
-            players.get(indexPlayer).addPoint(apple.getValue());
-            removeApple(apple);
-            return true;
-        }
-        return false;
+        return getAppleInPosition(p.getX(), p.getY());
     }
-    public boolean isAteAnApple(Player player) {
+    public Apple isAteAnApple(Player player) {
         return isAteAnApple(players.indexOf(player));
     }
 

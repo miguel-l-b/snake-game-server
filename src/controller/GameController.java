@@ -7,7 +7,14 @@ public class GameController extends Grid {
     public GameController(Grid grid) throws Exception 
     { super(grid); }
 
-    public void handleCollision(int indexPlayer) { super.isAteAnApple(indexPlayer); }
+    public Apple handleCollision(int indexPlayer) { 
+        Apple apple = super.isAteAnApple(indexPlayer);
+        if(apple == null) return null;
+
+        players.get(indexPlayer).addPoint(apple.getValue());
+        removeApple(apple);
+        return apple;
+    }
 
     public boolean movingVertical(int y, int indexPlayer) {
         Player p = super.players.get(indexPlayer);
@@ -19,7 +26,6 @@ public class GameController extends Grid {
             y < 0 && !super.isPlayerInPosition(p.getX(), p.getY()-1)
         ) {
             super.players.get(indexPlayer).movingVertical(y);
-            handleCollision(indexPlayer);
             return true;
         }
 
@@ -35,7 +41,6 @@ public class GameController extends Grid {
             (x < 0 && !super.isPlayerInPosition(p.getX()-1, p.getY()))
         ) {
             super.players.get(indexPlayer).movingHorizontal(x);
-            handleCollision(indexPlayer);
             return true;
         }
 
